@@ -1,4 +1,6 @@
-﻿namespace MathStatApp;
+﻿using System.ComponentModel;
+
+namespace MathStatApp;
 
 partial class Form1
 {
@@ -33,7 +35,16 @@ partial class Form1
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(800, 450);
         this.Text = "Form1";
+
+        var button = new Button();
+        button.Font = new Font("Microsoft Sans Serif", 10F);
+        button.Size = new Size(100, 100);
+        button.Text = "Выберите файл";
+        button.Click += ButtonOpenFile;
+        AddToControls(button);
     }
+    
+    private void AddToControls(Control contol) => Controls.Add(contol);
 
     #endregion
 }
