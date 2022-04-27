@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using ZedGraph;
 
 namespace MathStatApp;
 
@@ -42,6 +43,11 @@ partial class Form1
         button.Text = "Выберите файл";
         button.Click += ButtonOpenFile;
         AddToControls(button);
+
+        var zedgraphControl = new ZedGraphControl();
+        zedgraphControl.Name = "graph";
+        zedgraphControl.Size = new Size(500, 500);
+        AddToControls(zedgraphControl);
     }
     
     private void AddToControls(Control contol) => Controls.Add(contol);
