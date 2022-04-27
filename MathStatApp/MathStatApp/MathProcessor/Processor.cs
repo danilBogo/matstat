@@ -8,8 +8,8 @@ public class Processor
     public int DataSetCount => DataSet.Count;
     public double[] Intervals { get; set; }
     public double[] Averages { get; set; }
-    public double[] Frequencies { get; set; }
-    public double[] AccumulatedFrequencies { get; set; }
+    public int[] Frequencies { get; set; }
+    public int[] AccumulatedFrequencies { get; set; }
     public double[] RelativeFrequencies { get; set; }
     public double[] ZValues { get; set; }
     
@@ -97,8 +97,8 @@ public class Processor
 
     private void SetFrequencies()
     {
-        Frequencies = new double[IntervalsCount];
-        AccumulatedFrequencies = new double[IntervalsCount];
+        Frequencies = new int[IntervalsCount];
+        AccumulatedFrequencies = new int[IntervalsCount];
         
         foreach (var e in DataSet)
         {
@@ -116,7 +116,7 @@ public class Processor
         RelativeFrequencies = new double[IntervalsCount + 1];
         for (int i = 0; i < IntervalsCount; i++)
         {
-            RelativeFrequencies[i] = Math.Round(Frequencies[i] / DataSet.Count, 4);
+            RelativeFrequencies[i] = Math.Round((double) (Frequencies[i] / DataSet.Count), 4);
             if (i != 0)
                 AccumulatedFrequencies[i] = AccumulatedFrequencies[i - 1] + Frequencies[i];
         }
@@ -143,8 +143,12 @@ public class Processor
     private double GetModaValue()
     {
         var idx = Frequencies.ToList().IndexOf(Frequencies.Max());
-        double num = Frequencies[idx] - Frequencies[idx - 1];
-        double den = num + Frequencies[idx] - Frequencies[idx + 1];
+        var num = Frequencies[idx];
+        if (idx != 0)
+            num = Frequencies[idx] - Frequencies[idx - 1];
+        var den = num + Frequencies[idx];
+        if (idx != Frequencies.Length)
+            den = num + Frequencies[idx] - Frequencies[idx + 1];
         return Math.Round(Intervals[idx] + num / den * IntervalLength, 4);
     }
 
