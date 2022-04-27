@@ -47,6 +47,7 @@ partial class Form1
         var zedgraphControl = new ZedGraphControl();
         zedgraphControl.Name = "graph";
         zedgraphControl.Size = new Size(500, 500);
+        zedgraphControl.Location = new Point(100, 100);
         AddToControls(zedgraphControl);
     }
     
