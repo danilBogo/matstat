@@ -2,7 +2,7 @@
 
 namespace MathStatApp;
 
-public class ColumnsDanil
+public class ColumnsCsv
 {
     [Name("fixed acidity")]
     public string FixedAcidity { get; set; }
@@ -15,4 +15,10 @@ public class ColumnsDanil
     
     [Name("residual sugar")]
     public string ResidualSugar { get; set; }
+    
+    [Name("chlorides")]
+    public string Chlorides { get; set; }
+    
+    [Name("free sulfur dioxide")]
+    public string FreeSulfurDioxide { get; set; }
 }

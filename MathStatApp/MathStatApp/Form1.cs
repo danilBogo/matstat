@@ -5,6 +5,8 @@ namespace MathStatApp;
 
 public partial class Form1 : Form
 {
+    private string _pathFile;
+    
     public Form1()
     {
         InitializeComponent();
@@ -23,15 +25,26 @@ public partial class Form1 : Form
             return;
         }
 
-        var filePath = openFileDialog.FileName;
-        var parser = new Parser(filePath);
-        var initialDataset = parser.GetData<ColumnsDanil>().Select(c => c.CitricAcid);
+        _pathFile = openFileDialog.FileName;
+    }
+
+    private void ButtonClick<T>(object sender, EventArgs e, Func<T, string> selector)
+    {
+        if (string.IsNullOrEmpty(_pathFile))
+            return;
+        var parser = new Parser(_pathFile);
+        var initialDataset = parser.GetData<T>().Select(selector);
         var result = ResultBuilder.GetResult(initialDataset);
-        MessageBox.Show(result);
+        MessageBox.Show(result.Message);
 
         if (Controls["graph"] is not ZedGraphControl zedGraph)
             return;
-        ZedGraph.DrawGraph(zedGraph, new List<Column>());
+        var list = new List<GraphColumn>();
+        for (var i = 0; i < result.Intervals.Length; i++)
+        {
+            list.Add(new GraphColumn(i, result.Intervals[i], result.RelativeFreaquences[i]));
+        }
+        ZedGraph.DrawGraph(zedGraph, list);
     }
 
     private string GetInitialDirectory()

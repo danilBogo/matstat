@@ -116,7 +116,7 @@ public class Processor
         RelativeFrequencies = new double[IntervalsCount + 1];
         for (int i = 0; i < IntervalsCount; i++)
         {
-            RelativeFrequencies[i] = Math.Round((double) (Frequencies[i] / DataSet.Count), 4);
+            RelativeFrequencies[i] = (double) Frequencies[i] / DataSet.Count;
             if (i != 0)
                 AccumulatedFrequencies[i] = AccumulatedFrequencies[i - 1] + Frequencies[i];
         }
@@ -149,13 +149,15 @@ public class Processor
         var den = num + Frequencies[idx];
         if (idx != Frequencies.Length)
             den = num + Frequencies[idx] - Frequencies[idx + 1];
-        return Math.Round(Intervals[idx] + num / den * IntervalLength, 4);
+        return Math.Round(Intervals[idx] + (double)num / den * IntervalLength, 4);
     }
 
     private double GetMedianValue()
     {
         var idx = AccumulatedFrequencies.ToList().FindIndex(x => x >= DataSet.Count / 2);
-        double num = 0.5d * DataSet.Count - AccumulatedFrequencies[idx - 1];
+        double num = 0.5d * DataSet.Count;
+        if (idx - 1 > 0) 
+            num = 0.5d * DataSet.Count - AccumulatedFrequencies[idx - 1];
         double den = Frequencies[idx];
         return Math.Round(Intervals[idx] + num / den * IntervalLength, 4);
     }
@@ -179,7 +181,7 @@ public class Processor
     public double MathExpectationDovInterval(double standardDeviation, int n)
     {
         var t = 2.045d;
-        double delta = t * standardDeviation / (double) Math.Sqrt(n);
+        double delta = t * standardDeviation / Math.Sqrt(n);
         return delta;
     }
 }

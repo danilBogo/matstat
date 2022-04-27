@@ -4,11 +4,11 @@ namespace MathStatApp.MathProcessor;
 
 public static class ResultBuilder
 {
-    public static string GetResult(IEnumerable<string> initialDataSet)
+    public static Result GetResult(IEnumerable<string> initialDataSet)
     {
         var dataSet = GetDataSet(initialDataSet);
         var processor = new Processor(dataSet);
-        var result = $"Объем выборки: {processor.DataSetCount}\n" +
+        var message = $"Объем выборки: {processor.DataSetCount}\n" +
                      $"Максимальный элемент: {processor.XMax}\n" +
                      $"Минимальный элемент: {processor.XMin}\n" +
                      $"Количество интервалов: {processor.IntervalsCount}\n" +
@@ -23,7 +23,7 @@ public static class ResultBuilder
                      $"Коэффициент эксцесса: {processor.ExcessCoefficient} ({processor.ExcessCoefficientType})\n" +
                      $"Коэффициент вариации: {processor.VariationCoefficient}\n" +
                      $"{processor.VariationCoefficientType}\n";
-        return result;
+        return new Result(message, processor.RelativeFrequencies, processor.Intervals);
     }
 
     private static List<double> GetDataSet(IEnumerable<string> initialDataSet) =>
