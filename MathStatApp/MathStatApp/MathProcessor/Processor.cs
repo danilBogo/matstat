@@ -6,13 +6,13 @@ public class Processor
 {
     private List<double> DataSet { get; }
     public int DataSetCount => DataSet.Count;
-    public double[] Intervals { get; set; }
-    public double[] Averages { get; set; }
-    public int[] Frequencies { get; set; }
-    public int[] AccumulatedFrequencies { get; set; }
-    public double[] RelativeFrequencies { get; set; }
-    public double[] ZValues { get; set; }
-    
+    public double[] Intervals { get; private set; }
+    private double[] Averages { get; set; }
+    private int[] Frequencies { get; set; }
+    private int[] AccumulatedFrequencies { get; set; }
+    public double[] RelativeFrequencies { get; private set; }
+    private double[] ZValues { get; set; }
+
     public double Dispersion;
     public readonly double XMin;
     public readonly double XMax;
@@ -42,7 +42,7 @@ public class Processor
         SetDispersionAndZValues();
         ExcessCoefficient = GetExcessCoefficient();
         ExcessCoefficientType = GetExcessCoefficientType();
-        Fashion = GetModaValue();
+        Fashion = GetFashionValue();
         MedianValue = GetMedianValue();
         StandardDeviation = Math.Round(Math.Sqrt(Dispersion), 2);
         SkewnessCoefficient = GetSkewnessCoefficient();
@@ -99,22 +99,20 @@ public class Processor
     {
         Frequencies = new int[IntervalsCount];
         AccumulatedFrequencies = new int[IntervalsCount];
-        
+
         foreach (var e in DataSet)
         {
-            for (int i = 1; i < IntervalsCount + 1; i++)
+            for (var i = 1; i < IntervalsCount + 1; i++)
             {
-                if (Intervals[i - 1] <= e && e < Intervals[i])
-                {
-                    Frequencies[i - 1]++;
-                    break;
-                }
+                if (!(Intervals[i - 1] <= e) || !(e < Intervals[i])) continue;
+                Frequencies[i - 1]++;
+                break;
             }
         }
 
         AccumulatedFrequencies[0] = Frequencies[0];
         RelativeFrequencies = new double[IntervalsCount + 1];
-        for (int i = 0; i < IntervalsCount; i++)
+        for (var i = 0; i < IntervalsCount; i++)
         {
             RelativeFrequencies[i] = (double) Frequencies[i] / DataSet.Count;
             if (i != 0)
@@ -122,25 +120,20 @@ public class Processor
         }
     }
 
-    private double GetMathExpectation()
-    {
-        double sum = 0;
-        for (int i = 0; i < Averages.Length; i++)
-            sum += Averages[i] * RelativeFrequencies[i];
-        return Math.Round(sum, 2);
-    }
+    private double GetMathExpectation() =>
+        Math.Round(Averages.Select((t, i) => t * RelativeFrequencies[i]).Sum(), 2);
 
     private void SetDispersionAndZValues()
     {
         ZValues = new double[Averages.Length];
-        for (int i = 0; i < Averages.Length; i++)
+        for (var i = 0; i < Averages.Length; i++)
         {
             ZValues[i] = Averages[i] - MathExpectation;
             Dispersion += ZValues[i] * ZValues[i] * RelativeFrequencies[i];
         }
     }
 
-    private double GetModaValue()
+    private double GetFashionValue()
     {
         var idx = Frequencies.ToList().IndexOf(Frequencies.Max());
         var num = Frequencies[idx];
@@ -149,14 +142,14 @@ public class Processor
         var den = num + Frequencies[idx];
         if (idx != Frequencies.Length)
             den = num + Frequencies[idx] - Frequencies[idx + 1];
-        return Math.Round(Intervals[idx] + (double)num / den * IntervalLength, 4);
+        return Math.Round(Intervals[idx] + (double) num / den * IntervalLength, 4);
     }
 
     private double GetMedianValue()
     {
         var idx = AccumulatedFrequencies.ToList().FindIndex(x => x >= DataSet.Count / 2);
-        double num = 0.5d * DataSet.Count;
-        if (idx - 1 > 0) 
+        var num = 0.5d * DataSet.Count;
+        if (idx - 1 > 0)
             num = 0.5d * DataSet.Count - AccumulatedFrequencies[idx - 1];
         double den = Frequencies[idx];
         return Math.Round(Intervals[idx] + num / den * IntervalLength, 4);
@@ -164,24 +157,20 @@ public class Processor
 
     private double GetSkewnessCoefficient()
     {
-        double m3 = 0;
-        for (int i = 0; i < RelativeFrequencies.Length; i++)
-            m3 += ZValues[i] * ZValues[i] * ZValues[i] * RelativeFrequencies[i];
+        var m3 = RelativeFrequencies.Select((t, i) => ZValues[i] * ZValues[i] * ZValues[i] * t).Sum();
         return Math.Round(m3 / Dispersion / StandardDeviation, 4);
     }
 
     private double GetExcessCoefficient()
     {
-        double m4 = 0;
-        for (int i = 0; i < RelativeFrequencies.Length; i++)
-            m4 += ZValues[i] * ZValues[i] * ZValues[i] * ZValues[i] * RelativeFrequencies[i];
+        var m4 = RelativeFrequencies.Select((t, i) => ZValues[i] * ZValues[i] * ZValues[i] * ZValues[i] * t).Sum();
         return Math.Round(m4 / Dispersion / Dispersion - 3, 4);
     }
 
     public double MathExpectationDovInterval(double standardDeviation, int n)
     {
-        var t = 2.045d;
-        double delta = t * standardDeviation / Math.Sqrt(n);
+        const double t = 2.045d;
+        var delta = t * standardDeviation / Math.Sqrt(n);
         return delta;
     }
 }

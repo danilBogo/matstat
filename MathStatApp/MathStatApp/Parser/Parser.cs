@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using CsvHelper;
 
-namespace MathStatApp;
+namespace MathStatApp.Parser;
 
 public class Parser
 {

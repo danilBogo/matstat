@@ -1,6 +1,6 @@
 ﻿using ZedGraph;
 
-namespace MathStatApp;
+namespace MathStatApp.Graph;
 
 public static class ZedGraph
 {
@@ -9,7 +9,7 @@ public static class ZedGraph
         var pane = zedGraph.GraphPane;
         pane.CurveList.Clear();
 
-        pane.AddBar(null, null, columns.Select(c => c.Y).ToArray(), Color.Blue);
+        pane.AddBar(null, null, columns.Select(c => c.Y).ToArray(), Color.Yellow);
 
         pane.XAxis.Type = AxisType.Text;
 

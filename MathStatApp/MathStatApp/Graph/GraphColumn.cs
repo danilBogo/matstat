@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace MathStatApp;
+namespace MathStatApp.Graph;
 
 public class GraphColumn
 {

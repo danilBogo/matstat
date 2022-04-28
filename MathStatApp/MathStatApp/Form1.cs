@@ -1,5 +1,7 @@
+using MathStatApp.Graph;
 using MathStatApp.MathProcessor;
 using ZedGraph;
+using Label = System.Windows.Forms.Label;
 
 namespace MathStatApp;
 
@@ -24,7 +26,7 @@ public partial class Form1 : Form
             openFileDialog.Reset();
             return;
         }
-
+        
         _pathFile = openFileDialog.FileName;
     }
 
@@ -32,19 +34,21 @@ public partial class Form1 : Form
     {
         if (string.IsNullOrEmpty(_pathFile))
             return;
-        var parser = new Parser(_pathFile);
+        var parser = new Parser.Parser(_pathFile);
         var initialDataset = parser.GetData<T>().Select(selector);
         var result = ResultBuilder.GetResult(initialDataset);
-        MessageBox.Show(result.Message);
+        if (Controls["textBoxResult"] is not TextBox textBox)
+            return;
+        textBox.Text = result.Message;
 
         if (Controls["graph"] is not ZedGraphControl zedGraph)
             return;
         var list = new List<GraphColumn>();
         for (var i = 0; i < result.Intervals.Length; i++)
         {
-            list.Add(new GraphColumn(i, result.Intervals[i], result.RelativeFreaquences[i]));
+            list.Add(new GraphColumn(i, result.Intervals[i], result.RelativeFrequencies[i]));
         }
-        ZedGraph.DrawGraph(zedGraph, list);
+        Graph.ZedGraph.DrawGraph(zedGraph, list);
     }
 
     private string GetInitialDirectory()

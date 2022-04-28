@@ -1,15 +1,9 @@
 ﻿using CsvHelper.Configuration.Attributes;
 
-namespace MathStatApp;
+namespace MathStatApp.Graph;
 
 public class ColumnsCsv
 {
-    [Name("fixed acidity")]
-    public string FixedAcidity { get; set; }
-    
-    [Name("volatile acidity")]
-    public string VolatileAcidity { get; set; }
-
     [Name("citric acid")]
     public string CitricAcid { get; set; }
     

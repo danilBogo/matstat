@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
+using MathStatApp.Graph;
 using ZedGraph;
+using Label = System.Windows.Forms.Label;
 
 namespace MathStatApp;
 
@@ -34,28 +36,34 @@ partial class Form1
     {
         this.components = new System.ComponentModel.Container();
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(800, 650);
+        this.ClientSize = new System.Drawing.Size(1000, 900);
         this.Text = "Form1";
 
-        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(800, 50), "Выберите файл", new Point(0, 0), ButtonOpenFile);
-        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 100), "1", new Point(0, 50), (sender, e) => 
+        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(1000, 50), "Выберите файл", new Point(0, 0), ButtonOpenFile);
+        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 150), "1", new Point(0, 50), (sender, e) => 
             ButtonClick<ColumnsCsv>(sender, e, c => c.Chlorides));
-        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 100), "2", new Point(0, 150), (sender, e) => 
+        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 150), "2", new Point(0, 200), (sender, e) => 
             ButtonClick<ColumnsCsv>(sender, e, c => c.CitricAcid));
-        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 100), "3", new Point(0, 250), (sender, e) => 
-            ButtonClick<ColumnsCsv>(sender, e, c => c.FixedAcidity));
-        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 100), "4", new Point(0, 350), (sender, e) => 
+        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 150), "3", new Point(0, 350), (sender, e) => 
             ButtonClick<ColumnsCsv>(sender, e, c => c.ResidualSugar));
-        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 100), "5", new Point(0, 450), (sender, e) => 
-            ButtonClick<ColumnsCsv>(sender, e, c => c.VolatileAcidity));
-        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 100), "6", new Point(0, 550), (sender, e) => 
+        AddButton(new Font("Microsoft Sans Serif", 14F), new Size(100, 150), "4", new Point(0, 500), (sender, e) => 
             ButtonClick<ColumnsCsv>(sender, e, c => c.FreeSulfurDioxide));
 
         var zedgraphControl = new ZedGraphControl();
         zedgraphControl.Name = "graph";
-        zedgraphControl.Size = new Size(697, 597);
+        zedgraphControl.Size = new Size(897, 597);
         zedgraphControl.Location = new Point(100, 50);
         AddToControls(zedgraphControl);
+        
+        var textBox = new TextBox();
+        textBox.Name = "textBoxResult";
+        textBox.Size = new Size(1000, 400);
+        textBox.Location = new Point(0, 650);
+        textBox.Font = new Font("Microsoft Sans Serif", 12F);
+        textBox.ScrollBars = ScrollBars.Vertical;
+        textBox.Multiline = true;
+        AddToControls(textBox);
+        
     }
     
     private void AddToControls(Control contol) => Controls.Add(contol);
